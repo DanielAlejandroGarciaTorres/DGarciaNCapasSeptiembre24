@@ -7,6 +7,7 @@ package com.digis01.DGarciaProgramacionNCapasSeptiembre24.Controller;
 import com.digis01.DGarciaProgramacionNCapasSeptiembre24.DAO.AlumnoDAOImplementation;
 import com.digis01.DGarciaProgramacionNCapasSeptiembre24.ML.Alumno;
 import com.digis01.DGarciaProgramacionNCapasSeptiembre24.ML.AlumnoDireccion;
+import com.digis01.DGarciaProgramacionNCapasSeptiembre24.ML.ResultExcel;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -21,6 +22,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -45,7 +47,7 @@ public class CargaMasivaController {
     }
 
     @PostMapping
-    public String SetView(@RequestParam MultipartFile archivo) throws IOException { // aquí llegan txt o xlsx
+    public String SetView(@RequestParam MultipartFile archivo, Model model) throws IOException { // aquí llegan txt o xlsx
 
         // validar que extensión tiene mi archivo
         if (archivo != null && !archivo.isEmpty()) {
@@ -63,6 +65,17 @@ public class CargaMasivaController {
                 List<AlumnoDireccion> listaAlumnos = LecturaArchivo(archivo);
                 archivo.transferTo(new File(absolutePath)); //  generar una copia o un archivo nuevo como el que me mandaron
                 
+                if (!listaAlumnos.isEmpty()) {
+                    List<ResultExcel> listaErrores = ValidarDatos(listaAlumnos);
+                    
+                    if (listaErrores.isEmpty()) {
+                        model.addAttribute("archivoCorrecto", true);
+                    } else {
+                        model.addAttribute("archivoCorrecto", false);
+                        //mandar modelo de lista errores
+                    }
+                }
+                
                 // retorno como si fuera erroneo 
                 return "CargaMasivaIndex";
             } else {
@@ -74,6 +87,16 @@ public class CargaMasivaController {
         // SI TXT  hacer tal 
         return "CargaMasivaIndex";
     }
+    
+    
+    // tipo de metodo (GEt, PoST)
+    // metodo Prcesar
+    // ¿como le hago para recuperar 
+    //       la ruta sin usar una variable de global?
+    // Darle apertura al archivo
+    // Leer archivo
+    // recorrer
+        // persistir cada uno de los elementos. 
 
     private void ProcesarArchivoTXT(MultipartFile archivo) {
         try {
@@ -113,6 +136,7 @@ public class CargaMasivaController {
             AlumnoDireccion alumnoDireccion = new AlumnoDireccion();
             alumnoDireccion.Alumno = new Alumno();
             alumnoDireccion.Alumno.setNombre(row.getCell(0).toString());
+            alumnoDireccion.Alumno.setFechaNacimiento(row.getCell(3).getDateCellValue());
             
             // cargo toda mi información
             
@@ -124,6 +148,27 @@ public class CargaMasivaController {
         workbook.close();
         
         return listaAlumno;
+    }
+    
+    private List<ResultExcel> ValidarDatos (List<AlumnoDireccion> alumnosdireccion){
+        
+        int fila = 1;
+        String errorMessage = "";
+        List<ResultExcel> listaErrores = new ArrayList<>();
+        
+        for (AlumnoDireccion alumnoDireccion : alumnosdireccion) {
+            
+            if(alumnoDireccion.Alumno.getNombre().equals("")){
+                errorMessage = "Nombre sin información";
+                listaErrores.add(new ResultExcel(fila, errorMessage));
+            }
+            
+            
+            
+            fila++;
+        }
+        
+        return listaErrores;
     }
 
 }
