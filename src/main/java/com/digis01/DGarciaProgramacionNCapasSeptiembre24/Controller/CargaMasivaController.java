@@ -8,6 +8,7 @@ import com.digis01.DGarciaProgramacionNCapasSeptiembre24.DAO.AlumnoDAOImplementa
 import com.digis01.DGarciaProgramacionNCapasSeptiembre24.ML.Alumno;
 import com.digis01.DGarciaProgramacionNCapasSeptiembre24.ML.AlumnoDireccion;
 import com.digis01.DGarciaProgramacionNCapasSeptiembre24.ML.ResultExcel;
+import jakarta.servlet.http.HttpSession;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -42,12 +43,13 @@ public class CargaMasivaController {
     private AlumnoDAOImplementation alumnoDAOImplementation;
 
     @GetMapping
-    public String GetView() {
+    public String GetView(Model model) {
+        model.addAttribute("listaErrores", new ArrayList<>());
         return "CargaMasivaIndex";
     }
 
     @PostMapping
-    public String SetView(@RequestParam MultipartFile archivo, Model model) throws IOException { // aquí llegan txt o xlsx
+    public String SetView(@RequestParam MultipartFile archivo, Model model, HttpSession session) throws IOException { // aquí llegan txt o xlsx
 
         // validar que extensión tiene mi archivo
         if (archivo != null && !archivo.isEmpty()) {
@@ -64,18 +66,20 @@ public class CargaMasivaController {
                 String absolutePath = root + "/" + path + fecha + archivo.getOriginalFilename();
                 List<AlumnoDireccion> listaAlumnos = LecturaArchivo(archivo);
                 archivo.transferTo(new File(absolutePath)); //  generar una copia o un archivo nuevo como el que me mandaron
-                
+
                 if (!listaAlumnos.isEmpty()) {
                     List<ResultExcel> listaErrores = ValidarDatos(listaAlumnos);
-                    
+
                     if (listaErrores.isEmpty()) {
                         model.addAttribute("archivoCorrecto", true);
+                        model.addAttribute("listaErrores", new ArrayList<>());
+                        session.setAttribute("pathArchivo", absolutePath); // ya guarde información en el servidor
                     } else {
                         model.addAttribute("archivoCorrecto", false);
-                        //mandar modelo de lista errores
+                        model.addAttribute("listaErroes", listaErrores);
                     }
                 }
-                
+
                 // retorno como si fuera erroneo 
                 return "CargaMasivaIndex";
             } else {
@@ -87,8 +91,20 @@ public class CargaMasivaController {
         // SI TXT  hacer tal 
         return "CargaMasivaIndex";
     }
-    
-    
+
+    @GetMapping("/Procesar")
+    public String ProcesarArchivo(HttpSession session){ 
+        
+        String infoRuta =  session.getAttribute("pathArchivo").toString();
+        
+        // lectura de archivo por la ruta 
+        // leo archivo 
+        // empiezo a persistir uno a uno 
+        
+        
+        
+        return "";
+    }
     // tipo de metodo (GEt, PoST)
     // metodo Prcesar
     // ¿como le hago para recuperar 
@@ -96,8 +112,7 @@ public class CargaMasivaController {
     // Darle apertura al archivo
     // Leer archivo
     // recorrer
-        // persistir cada uno de los elementos. 
-
+    // persistir cada uno de los elementos. 
     private void ProcesarArchivoTXT(MultipartFile archivo) {
         try {
             InputStream inputStream = archivo.getInputStream();
@@ -125,49 +140,44 @@ public class CargaMasivaController {
     }
 
     // try catch (finally) / try with resources / throws / throw 
-
     private List<AlumnoDireccion> LecturaArchivo(MultipartFile archivo) throws IOException {
 
         List<AlumnoDireccion> listaAlumno = new ArrayList<>();
         XSSFWorkbook workbook = new XSSFWorkbook(archivo.getInputStream()); // abrir el archivo
         Sheet workSheet = workbook.getSheetAt(0);
-        
+
         for (Row row : workSheet) {
             AlumnoDireccion alumnoDireccion = new AlumnoDireccion();
             alumnoDireccion.Alumno = new Alumno();
             alumnoDireccion.Alumno.setNombre(row.getCell(0).toString());
             alumnoDireccion.Alumno.setFechaNacimiento(row.getCell(3).getDateCellValue());
-            
+
             // cargo toda mi información
-            
-            
             listaAlumno.add(alumnoDireccion);
-            
+
         }
-        
+
         workbook.close();
-        
+
         return listaAlumno;
     }
-    
-    private List<ResultExcel> ValidarDatos (List<AlumnoDireccion> alumnosdireccion){
-        
+
+    private List<ResultExcel> ValidarDatos(List<AlumnoDireccion> alumnosdireccion) {
+
         int fila = 1;
         String errorMessage = "";
         List<ResultExcel> listaErrores = new ArrayList<>();
-        
+
         for (AlumnoDireccion alumnoDireccion : alumnosdireccion) {
-            
-            if(alumnoDireccion.Alumno.getNombre().equals("")){
+
+            if (alumnoDireccion.Alumno.getNombre().equals("")) {
                 errorMessage = "Nombre sin información";
                 listaErrores.add(new ResultExcel(fila, errorMessage));
             }
-            
-            
-            
+
             fila++;
         }
-        
+
         return listaErrores;
     }
 

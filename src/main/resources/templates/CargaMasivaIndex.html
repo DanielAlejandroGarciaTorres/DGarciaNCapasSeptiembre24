@@ -29,21 +29,23 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                 </form>
             </div>
 
-            <div th:if="${archivoCorrecto}">
-                <h4>Archivo correcto: </h4>
-                <a th:href="@{/CargaMAsiva/Procesar}" class="btn btn-success">Proesar archivo</a>
-            </div>
-            
-            <div th:unless="${archivoCorrcto}">
-                <h4>Archivo incorrecto: </h4>
-                <table class="table table-responsive table-bordered">
-                    <thead class="table-dark">
-                    <th class="col-2">Actualizar</th>
-                    <th>Nombre</th>
-                    <th>Contacto</th>
-                    <th class="col-2">Eliminar</th>
-                    </thead>
-                </table>
+            <div th:if="${archivoCorrecto!= null}">
+                <div th:if="${listaErrores.isEmpty()}">
+                    <h4>Archivo correcto: </h4>
+                    <a th:href="@{/CargaMasiva/Procesar}" class="btn btn-success">Proesar archivo</a>
+                </div>
+
+                <div th:unless="${listaErrores.isEmpty()}">
+                    <h4>Archivo incorrecto: </h4>
+                    <table class="table table-responsive table-bordered">
+                        <thead class="table-dark">
+                        <th class="col-2">Actualizar</th>
+                        <th>Nombre</th>
+                        <th>Contacto</th>
+                        <th class="col-2">Eliminar</th>
+                        </thead>
+                    </table>
+                </div>
             </div>
         </div>
 
