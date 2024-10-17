@@ -9,6 +9,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import java.util.Date;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -43,8 +44,9 @@ public class Alumno {
     @JoinColumn(name = "idsemestre")
     public Semestre Semestre; // Propiedad de navegación
     
-    
-//    private String Imagen;
+    @Lob
+    @Column(name = "imagen")
+    private String Imagen;
 
     public Alumno() {
     }
@@ -119,14 +121,14 @@ public class Alumno {
     public void setPassword(String Password) {
         this.Password = Password;
     }
-//    
-//     public String getImagen() {
-//        return Imagen;
-//    }
-//
-//    public void setImagen(String Imagen) {
-//        this.Imagen = Imagen;
-//    }
+    
+     public String getImagen() {
+        return Imagen;
+    }
+
+    public void setImagen(String Imagen) {
+        this.Imagen = Imagen;
+    }
     
     
     

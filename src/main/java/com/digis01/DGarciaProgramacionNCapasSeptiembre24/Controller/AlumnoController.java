@@ -49,8 +49,8 @@ public class AlumnoController {
 
     @GetMapping
     public String GetAll(Model model) {
-        alumnoDAOImplementation.GetAllJPA();
-        Result result = alumnoDAOImplementation.GetAll();
+        Result result = alumnoDAOImplementation.GetAllJPA();
+//        Result result = alumnoDAOImplementation.GetAll();
 
         Alumno alumnoBusqueda = new Alumno();
         alumnoBusqueda.Semestre = new Semestre();

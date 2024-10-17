@@ -6,6 +6,7 @@ package com.digis01.DGarciaProgramacionNCapasSeptiembre24.DAO;
 
 import com.digis01.DGarciaProgramacionNCapasSeptiembre24.ML.Alumno;
 import com.digis01.DGarciaProgramacionNCapasSeptiembre24.ML.AlumnoDireccion;
+import com.digis01.DGarciaProgramacionNCapasSeptiembre24.ML.Direccion;
 import com.digis01.DGarciaProgramacionNCapasSeptiembre24.ML.Result;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
@@ -122,19 +123,32 @@ public class AlumnoDAOImplementation implements IAlumnoDAO {
     public Result GetAllJPA() {
         // JPQL
         
+        Result result = new Result();
+        
         TypedQuery<com.digis01.DGarciaProgramacionNCapasSeptiembre24.JPA.Alumno> queryAlumnos = entityManager.createQuery("FROM Alumno", com.digis01.DGarciaProgramacionNCapasSeptiembre24.JPA.Alumno.class);
         List<com.digis01.DGarciaProgramacionNCapasSeptiembre24.JPA.Alumno> listaAlumnos = queryAlumnos.getResultList();
+        List<AlumnoDireccion> listaAlumnoDireccion  = new ArrayList<>();
         
-        // Mapear todas las clase de la bd
-        // crear una consulta para ver todas las direcciones
+        for (com.digis01.DGarciaProgramacionNCapasSeptiembre24.JPA.Alumno alumnoJPA : listaAlumnos) {
+            AlumnoDireccion alumnoDireccion =  new AlumnoDireccion();
+            alumnoDireccion.Alumno = new Alumno(alumnoJPA);
+            
+            try {
+                TypedQuery<com.digis01.DGarciaProgramacionNCapasSeptiembre24.JPA.Direccion> queryDireccion = entityManager.createQuery("FROM Direccion WHERE Alumno.IdAlumno = :pIdAlumno", com.digis01.DGarciaProgramacionNCapasSeptiembre24.JPA.Direccion.class);
+                queryDireccion.setParameter("pIdAlumno", alumnoJPA.getIdAlumno());
+                com.digis01.DGarciaProgramacionNCapasSeptiembre24.JPA.Direccion direccionJPA = queryDireccion.getSingleResult();
+                
+                alumnoDireccion.Direccion = new Direccion(direccionJPA);
+            } catch(Exception ex){
+                continue;
+            } finally {
+                listaAlumnoDireccion.add(alumnoDireccion);
+            }
+        }
         
-        // intentar sacar AlumnoyDireccion
-        // consultar todos los alumnos
-        // como mandar parametros para hacer una busqueda por id
-        // recuperar las direcciones
+        result.correct = true;
+        result.object = listaAlumnoDireccion;
         
-        // List<alumnodireccion>
-        
-        return null;
+        return result;
     }
 }

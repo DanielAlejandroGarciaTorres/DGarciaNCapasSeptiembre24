@@ -29,6 +29,21 @@ public class Alumno {
     public Alumno() {
     }
 
+    public Alumno(com.digis01.DGarciaProgramacionNCapasSeptiembre24.JPA.Alumno alumnoJPA) {
+        this.IdAlumno = alumnoJPA.getIdAlumno();
+        this.Nombre = alumnoJPA.getNombre();
+        this.Apellido = alumnoJPA.getApellido();
+        this.FechaNacimiento = alumnoJPA.getFechaNacimiento();
+        this.UserName = alumnoJPA.getUserName();
+        this.Email = alumnoJPA.getEmail();
+        this.Password = alumnoJPA.getPassword();
+        this.Semestre = new Semestre();
+        this.Semestre.setIdSemestre(alumnoJPA.Semestre.getIdSemestre());
+        this.Imagen = alumnoJPA.getImagen();
+    }
+    
+    
+
     public Alumno(String Nombre, String Apellido, Date FechaNacimiento) {
         this.Nombre = Nombre;
         this.Apellido = Apellido;
