@@ -11,6 +11,7 @@ import com.digis01.DGarciaProgramacionNCapasSeptiembre24.ML.ResultExcel;
 import jakarta.servlet.http.HttpSession;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -64,8 +65,9 @@ public class CargaMasivaController {
                 String path = "src/main/resources/static/archivos/";
                 String fecha = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
                 String absolutePath = root + "/" + path + fecha + archivo.getOriginalFilename();
-                List<AlumnoDireccion> listaAlumnos = LecturaArchivo(archivo);
                 archivo.transferTo(new File(absolutePath)); //  generar una copia o un archivo nuevo como el que me mandaron
+                List<AlumnoDireccion> listaAlumnos = LecturaArchivo(new File(absolutePath));
+                
 
                 if (!listaAlumnos.isEmpty()) {
                     List<ResultExcel> listaErrores = ValidarDatos(listaAlumnos);
@@ -93,9 +95,11 @@ public class CargaMasivaController {
     }
 
     @GetMapping("/Procesar")
-    public String ProcesarArchivo(HttpSession session){ 
+    public String ProcesarArchivo(HttpSession session) throws IOException{ 
         
         String infoRuta =  session.getAttribute("pathArchivo").toString();
+        
+        LecturaArchivo( new File(infoRuta));
         
         // lectura de archivo por la ruta 
         // leo archivo 
@@ -140,24 +144,23 @@ public class CargaMasivaController {
     }
 
     // try catch (finally) / try with resources / throws / throw 
-    private List<AlumnoDireccion> LecturaArchivo(MultipartFile archivo) throws IOException {
+    private List<AlumnoDireccion> LecturaArchivo(File archivo) throws IOException {
 
         List<AlumnoDireccion> listaAlumno = new ArrayList<>();
-        XSSFWorkbook workbook = new XSSFWorkbook(archivo.getInputStream()); // abrir el archivo
-        Sheet workSheet = workbook.getSheetAt(0);
-
-        for (Row row : workSheet) {
-            AlumnoDireccion alumnoDireccion = new AlumnoDireccion();
-            alumnoDireccion.Alumno = new Alumno();
-            alumnoDireccion.Alumno.setNombre(row.getCell(0).toString());
-            alumnoDireccion.Alumno.setFechaNacimiento(row.getCell(3).getDateCellValue());
-
-            // cargo toda mi información
-            listaAlumno.add(alumnoDireccion);
-
+        try (XSSFWorkbook workbook = new XSSFWorkbook(new FileInputStream(archivo))) {
+            Sheet workSheet = workbook.getSheetAt(0);
+            
+            for (Row row : workSheet) {
+                AlumnoDireccion alumnoDireccion = new AlumnoDireccion();
+                alumnoDireccion.Alumno = new Alumno();
+                alumnoDireccion.Alumno.setNombre(row.getCell(0).toString());
+                alumnoDireccion.Alumno.setFechaNacimiento(row.getCell(3).getDateCellValue());
+                
+                // cargo toda mi información
+                listaAlumno.add(alumnoDireccion);
+                
+            }
         }
-
-        workbook.close();
 
         return listaAlumno;
     }
