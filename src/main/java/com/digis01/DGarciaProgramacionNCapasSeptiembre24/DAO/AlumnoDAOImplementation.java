@@ -7,6 +7,8 @@ package com.digis01.DGarciaProgramacionNCapasSeptiembre24.DAO;
 import com.digis01.DGarciaProgramacionNCapasSeptiembre24.ML.Alumno;
 import com.digis01.DGarciaProgramacionNCapasSeptiembre24.ML.AlumnoDireccion;
 import com.digis01.DGarciaProgramacionNCapasSeptiembre24.ML.Result;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
 import java.sql.CallableStatement;
 import java.sql.ResultSet;
 import java.sql.Types;
@@ -21,7 +23,10 @@ import org.springframework.stereotype.Repository;
 public class AlumnoDAOImplementation implements IAlumnoDAO {
 
     @Autowired  // inyección de dependencias
-    private JdbcTemplate jdbcTemplate;
+    private JdbcTemplate jdbcTemplate; // data-jdbc
+    
+    @Autowired
+    private EntityManager entityManager; // data-jpa
 
     @Override
     public Result GetAll() {
@@ -111,5 +116,25 @@ public class AlumnoDAOImplementation implements IAlumnoDAO {
 
         return result;
         
+    }
+
+    @Override
+    public Result GetAllJPA() {
+        // JPQL
+        
+        TypedQuery<com.digis01.DGarciaProgramacionNCapasSeptiembre24.JPA.Alumno> queryAlumnos = entityManager.createQuery("FROM Alumno", com.digis01.DGarciaProgramacionNCapasSeptiembre24.JPA.Alumno.class);
+        List<com.digis01.DGarciaProgramacionNCapasSeptiembre24.JPA.Alumno> listaAlumnos = queryAlumnos.getResultList();
+        
+        // Mapear todas las clase de la bd
+        // crear una consulta para ver todas las direcciones
+        
+        // intentar sacar AlumnoyDireccion
+        // consultar todos los alumnos
+        // como mandar parametros para hacer una busqueda por id
+        // recuperar las direcciones
+        
+        // List<alumnodireccion>
+        
+        return null;
     }
 }

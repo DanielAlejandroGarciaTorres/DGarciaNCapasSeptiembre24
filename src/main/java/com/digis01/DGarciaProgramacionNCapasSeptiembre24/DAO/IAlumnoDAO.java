@@ -16,4 +16,6 @@ public interface IAlumnoDAO {
     
     Result Add(AlumnoDireccion alumnoDireccion); 
     
+    Result GetAllJPA();
+    
 }
