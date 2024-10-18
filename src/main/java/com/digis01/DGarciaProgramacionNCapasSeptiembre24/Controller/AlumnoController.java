@@ -146,24 +146,17 @@ public class AlumnoController {
                 byte[] bytes = imagenFile.getBytes();
                 String imagenBase64 = Base64.getEncoder().encodeToString(bytes);
                 alumnoDireccion.Alumno.setImagen(imagenBase64);
-                
-                
-                //Siempre manden una imagen -- lograr la incersion
-                //  Poner una imagen por defecto en el formulario
-                //  si lo que recupero es la imagen por defecto 
-                        // no almaceno la imagen por defecto en la base de datos
-                      
-                //UPDATE
-                    // si el usuario tiene una imagen 
-                        // mostrar la imagen asignada y no la de por defecto 
-                
             }
         } catch (Exception ex) {
 
         }
 
         if (alumnoDireccion.Alumno.getIdAlumno() == 0) { // Agregar
-            result = alumnoDAOImplementation.Add(alumnoDireccion);
+//            result = alumnoDAOImplementation.Add(alumnoDireccion);
+
+            alumnoDireccion.Alumno.setPassword("alexis123");
+            alumnoDireccion.Alumno.setEmail("alexis2@agamil.com");
+            result = alumnoDAOImplementation.AddJPA(alumnoDireccion);
         } else {
             // crear un metodo para actualizar    
         }

@@ -51,6 +51,21 @@ public class Alumno {
     public Alumno() {
     }
 
+    public Alumno(com.digis01.DGarciaProgramacionNCapasSeptiembre24.ML.Alumno alumnoML) {
+        this.IdAlumno = alumnoML.getIdAlumno();
+        this.Nombre = alumnoML.getNombre();
+        this.Apellido = alumnoML.getApellido();
+        this.FechaNacimiento = alumnoML.getFechaNacimiento();
+        this.UserName = alumnoML.getUserName();
+        this.Email = alumnoML.getEmail();
+        this.Password = alumnoML.getPassword();
+        this.Semestre = new Semestre();
+        this.Semestre.setIdSemestre(alumnoML.Semestre.getIdSemestre());
+        this.Imagen = alumnoML.getImagen();
+    }
+    
+    
+
     public Alumno(String Nombre, String Apellido, Date FechaNacimiento) {
         this.Nombre = Nombre;
         this.Apellido = Apellido;
