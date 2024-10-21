@@ -21,5 +21,7 @@ public interface IAlumnoDAO {
     
     Result AddJPA(AlumnoDireccion alumnoDireccion);
     
+    Result GetByIdJPA(int idAlumno);
     
+    Result UpdateJPA(AlumnoDireccion alumnoDireccion);
 }

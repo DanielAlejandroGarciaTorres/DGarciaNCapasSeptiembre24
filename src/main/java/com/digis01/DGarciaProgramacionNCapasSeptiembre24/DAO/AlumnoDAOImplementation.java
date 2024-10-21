@@ -8,6 +8,7 @@ import com.digis01.DGarciaProgramacionNCapasSeptiembre24.ML.Alumno;
 import com.digis01.DGarciaProgramacionNCapasSeptiembre24.ML.AlumnoDireccion;
 import com.digis01.DGarciaProgramacionNCapasSeptiembre24.ML.Direccion;
 import com.digis01.DGarciaProgramacionNCapasSeptiembre24.ML.Result;
+import groovyjarjarantlr4.v4.parse.ANTLRParser;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
@@ -101,9 +102,13 @@ public class AlumnoDAOImplementation implements IAlumnoDAO {
                         callableStatement.setString(6, alumnoDireccion.Alumno.getPassword());
                         callableStatement.setInt(7, alumnoDireccion.Alumno.Semestre.getIdSemestre());
                         callableStatement.setString(8, alumnoDireccion.Alumno.getImagen());
-                        callableStatement.setString(8, alumnoDireccion.Alumno.getImagen());
-                        callableStatement.execute();
-                        return 0;
+                        callableStatement.setString(9, alumnoDireccion.Direccion.getCalle());
+                        callableStatement.setString(10, alumnoDireccion.Direccion.getNumeroInterior());
+                        callableStatement.setString(11, alumnoDireccion.Direccion.getNumeroExterior());
+                        callableStatement.setInt(12, alumnoDireccion.Direccion.Colonia.getIdColonia());
+                        
+                        
+                        return callableStatement.executeUpdate();
                     });
 
             result.correct = true;
@@ -162,10 +167,10 @@ public class AlumnoDAOImplementation implements IAlumnoDAO {
 
         com.digis01.DGarciaProgramacionNCapasSeptiembre24.JPA.Alumno alumno = new com.digis01.DGarciaProgramacionNCapasSeptiembre24.JPA.Alumno(alumnoDireccion.Alumno);
 
-        entityManager.persist(alumno);
-        
+        entityManager.persist(alumno);  // idUsuario = 0
+                                            // idUsuario = n
         //generar un dirección JPA
-        // direccion.Usuario = 
+        // direccion.Usuario = usuario
         // entityManager.merge
         
 //        eliminar
@@ -174,4 +179,79 @@ public class AlumnoDAOImplementation implements IAlumnoDAO {
         return null;
 
     }
+    
+    
+//   update( alumnoDireccion )
+    // actualizar información de alumnoDireccion.Alumno
+    // alumnoJPA <- alumnoDireccion.Alumno
+    // entityManager.merge(alumnoJPA);
+    
+    // generar una consulta para recuperar direccion
+    
+    // direccionJPA <- alumnoDireccion.Direccion
+    // entityManager.merge(direccionJPA); 
+            // Agrega - Idusuario = 0
+            // Edita - IdUsuario =25 
+    
+    
+    // getByID
+
+    @Override
+    public Result GetByIdJPA(int idAlumno) {
+        
+        try {
+            TypedQuery<com.digis01.DGarciaProgramacionNCapasSeptiembre24.JPA.Alumno> queryAlumno = entityManager.createQuery("FROM Alumno WHERE IdAlumno = :pIdAlumno", com.digis01.DGarciaProgramacionNCapasSeptiembre24.JPA.Alumno.class);
+            queryAlumno.setParameter("pIdAlumno", idAlumno);
+            com.digis01.DGarciaProgramacionNCapasSeptiembre24.JPA.Alumno alumnoJPA = queryAlumno.getSingleResult();
+            
+            try {
+                TypedQuery<com.digis01.DGarciaProgramacionNCapasSeptiembre24.JPA.Direccion> queryDireccion = entityManager.createQuery("FROM Direccion WHERE Alumno.IdAlumno = :pIdAlumno", com.digis01.DGarciaProgramacionNCapasSeptiembre24.JPA.Direccion.class);
+                queryDireccion.setParameter("pIdAlumno", alumnoJPA.getIdAlumno());
+                com.digis01.DGarciaProgramacionNCapasSeptiembre24.JPA.Direccion direccionJPA = queryDireccion.getSingleResult();
+            } catch (Exception ex) {
+                
+            }
+            
+        } catch (Exception ex ){
+            //result.correct = false
+            
+            
+        }
+        
+        return null; // retorno result
+    }
+
+    @Override
+    public Result UpdateJPA(AlumnoDireccion alumnoDireccion) {
+        
+        //Usuario no tiene direccion, es decir, idDireccion = 0
+        //Usuario si tiene direccion, es decir, idDireccion = n 
+//            entityManager.merge(usuarioJPA);
+//            direccionJPA.Usuario = usuarioJPA);
+//            entityManager.merge(direccionJPA);
+            
+        
+        
+        return null;
+    }
+    
+    
+    // Deleteeeeeeeeeeee
+    
+    // try catch finally 
+    
+//    try
+        // TRY - intento eliminar a Direccion
+        // catch - ignoro 
+        // finally  - elimino a mi usuario      // entityManager.remove
+//    catch
+    //result.errorMessage
+    
+    
+    
+    // investigacion
+    
+    // validaciones de lado del cliente /**/
+    // validaciones de lado del servidor (generarlas, anotaciones, dependencias, BindingResult, RegEx, ASCII)
+    
 }
