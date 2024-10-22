@@ -38,6 +38,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                             <span class="input-group-text" id="basic-addon1"><i class="bi bi-person-fill"></i></span>
                             <input id="NombreAlumno" type="text" class="form-control" placeholder="Nombre" th:field="*{Alumno.Nombre}">
                         </div>  
+                        <span class="text-danger" th:if="${#fields.hasErrors('Alumno.Nombre')}" th:errors="*{Alumno.Nombre}"></span>
                     </div>
                     <div class="col-md-6">
                         <label for="ApellidoPaternoAlumno" class="form-label">Apellido Paterno</label>
@@ -165,6 +166,21 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
         
         
         <script> 
+            
+            function soloLetras(event, span){
+                var regex = /^[a-zA-Z]+$/
+                var key = event.key;
+                var mensajeSpan = document.getElementById(span);
+                if(key.match(regex)){
+                    mensajeSpan.innerHTML = "";
+                    return true;
+                } else {
+                    mensajeSpan.innerHTML = "Solo letras";
+                    return false; 
+                }
+            }
+            
+            
             $(document).ready(function(){ 
                 
                 
@@ -200,7 +216,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
 
     </body>
     <footer>
-
+        
     </footer>
 
 

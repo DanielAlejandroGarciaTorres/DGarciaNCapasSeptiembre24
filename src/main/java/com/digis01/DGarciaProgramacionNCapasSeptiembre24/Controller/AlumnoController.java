@@ -16,12 +16,14 @@ import com.digis01.DGarciaProgramacionNCapasSeptiembre24.ML.Estado;
 import com.digis01.DGarciaProgramacionNCapasSeptiembre24.ML.Municipio;
 import com.digis01.DGarciaProgramacionNCapasSeptiembre24.ML.Result;
 import com.digis01.DGarciaProgramacionNCapasSeptiembre24.ML.Semestre;
+import jakarta.validation.Valid;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -137,8 +139,18 @@ public class AlumnoController {
     }
 
     @PostMapping("/form")
-    public String AddUpdate(@ModelAttribute AlumnoDireccion alumnoDireccion,
-            @RequestParam("imagenFile") MultipartFile imagenFile) {
+    public String AddUpdate(@Valid @ModelAttribute AlumnoDireccion alumnoDireccion,
+            BindingResult bindingResult,
+            @RequestParam("imagenFile") MultipartFile imagenFile,
+            Model model) {
+        
+        
+        if( bindingResult. hasErrors()) {
+            model.addAttribute("alumnoDireccion", alumnoDireccion);
+            return "AlumnoForm";
+        }
+        
+        
         Result result = new Result();
 
         try {

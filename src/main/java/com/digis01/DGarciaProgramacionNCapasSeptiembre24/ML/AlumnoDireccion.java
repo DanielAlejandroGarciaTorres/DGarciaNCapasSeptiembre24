@@ -4,11 +4,15 @@
  */
 package com.digis01.DGarciaProgramacionNCapasSeptiembre24.ML;
 
+import jakarta.validation.Valid;
+
 /**
  *
  * @author ALIEN 34
  */
 public class AlumnoDireccion {
+    
+    @Valid
     public Alumno Alumno;
     public Direccion Direccion;
 
