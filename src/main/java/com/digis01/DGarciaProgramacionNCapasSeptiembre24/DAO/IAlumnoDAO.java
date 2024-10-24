@@ -24,4 +24,6 @@ public interface IAlumnoDAO {
     Result GetByIdJPA(int idAlumno);
     
     Result UpdateJPA(AlumnoDireccion alumnoDireccion);
+    
+    Result UpdateStatusJPA(int idAlumno, boolean isChecked);
 }

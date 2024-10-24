@@ -253,5 +253,30 @@ public class AlumnoDAOImplementation implements IAlumnoDAO {
     
     // validaciones de lado del cliente /**/
     // validaciones de lado del servidor (generarlas, anotaciones, dependencias, BindingResult, RegEx, ASCII)
+
+    @Override
+    @Transactional
+    public Result UpdateStatusJPA(int idAlumno, boolean isChecked) {
+        Result result = new Result();
+        
+        try {
+            
+            TypedQuery<com.digis01.DGarciaProgramacionNCapasSeptiembre24.JPA.Alumno> queryAlumno = entityManager.createQuery("FROM Alumno WHERE IdAlumno = :pIdAlumno", com.digis01.DGarciaProgramacionNCapasSeptiembre24.JPA.Alumno.class);
+            queryAlumno.setParameter("pIdAlumno", idAlumno);
+            com.digis01.DGarciaProgramacionNCapasSeptiembre24.JPA.Alumno alumnoJPA = queryAlumno.getSingleResult();
+            
+            alumnoJPA.setStatus(isChecked ? 1 : 0);
+            
+            entityManager.merge(alumnoJPA);
+            
+            result.correct = true;
+            
+        } catch (Exception ex ) {
+            result.correct = false;
+            result.errorMessage = ex.getLocalizedMessage();
+        }
+        
+        return result;
+    }
     
 }

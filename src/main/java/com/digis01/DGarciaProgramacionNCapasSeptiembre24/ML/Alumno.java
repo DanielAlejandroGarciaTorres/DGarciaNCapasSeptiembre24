@@ -33,6 +33,7 @@ public class Alumno {
     private String Password;
     public Semestre Semestre; // Propiedad de navegación
     private String Imagen;
+    private int Status;
 
     public Alumno() {
     }
@@ -48,6 +49,7 @@ public class Alumno {
         this.Semestre = new Semestre();
         this.Semestre.setIdSemestre(alumnoJPA.Semestre.getIdSemestre());
         this.Imagen = alumnoJPA.getImagen();
+        this.Status = alumnoJPA.getStatus();
     }
     
     
@@ -131,7 +133,6 @@ public class Alumno {
         this.Semestre = Semestre;
     }
     
-    
      public String getImagen() {
         return Imagen;
     }
@@ -140,6 +141,12 @@ public class Alumno {
         this.Imagen = Imagen;
     }
     
-    
+    public int getStatus() {
+        return Status;
+    }
+
+    public void setStatus(int Status) {
+        this.Status = Status;
+    }
     
 }

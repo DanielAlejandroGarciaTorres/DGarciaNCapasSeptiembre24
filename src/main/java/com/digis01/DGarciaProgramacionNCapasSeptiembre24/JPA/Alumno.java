@@ -48,6 +48,9 @@ public class Alumno {
     @Column(name = "imagen")
     private String Imagen;
 
+    @Column(name = "status")
+    private int Status; 
+    
     public Alumno() {
     }
 
@@ -144,7 +147,13 @@ public class Alumno {
     public void setImagen(String Imagen) {
         this.Imagen = Imagen;
     }
-    
-    
+
+    public int getStatus() {
+        return Status;
+    }
+
+    public void setStatus(int Status) {
+        this.Status = Status;
+    }
     
 }

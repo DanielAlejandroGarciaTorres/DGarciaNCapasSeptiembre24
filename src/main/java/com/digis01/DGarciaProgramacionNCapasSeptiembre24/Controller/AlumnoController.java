@@ -184,5 +184,14 @@ public class AlumnoController {
 
         return municipios;
     }
+    
+    @GetMapping("/UpdateStatus")
+    @ResponseBody
+    public Result UpdateStatus(@RequestParam("idAlumno") int idUser, @RequestParam boolean isChecked){
+        
+        Result result = alumnoDAOImplementation.UpdateStatusJPA(idUser, isChecked);
+        
+        return result;
+    }
 
 }
